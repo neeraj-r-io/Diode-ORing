@@ -7,9 +7,7 @@ A discrete analog power-path switchover circuit that automatically switches a lo
 ---
 
 ## Circuit Schematic & Simulation
-<!-- Remove or rename these lines to match your uploaded image filenames -->
-![Circuit Schematic](schematic.png)
-![Transient Waveform](waveform.png)
+![LTspice Schematic and Transient Waveform](FINAL_OP.png)
 
 ---
 

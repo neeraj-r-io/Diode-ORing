@@ -1,38 +1,59 @@
-# UPS
-Components used:
-PNP Transistor
- Led Diode
- Schottky Diode (2)
-1K ohm Resistor (2)
-10K ohm Resistor
-2 Voltage Sources (9V and 12V) [12V-PWL source, 9V Backup Source]
-100 microfarad Capacitor
-Connecting wires
+# Automatic 12V-to-9V Diode-ORing UPS Switchover Circuit
 
+🏆 **1st Place — Concept to Circuit** | TechnoVIT'26 (Annual Technical Festival, VIT Chennai, Sept 2026)
 
-Understanding:
-To construct a ORing Diode which acts as a ups switching to 9v when the 12V source fails. 
+A discrete analog power-path switchover circuit that automatically switches a load from a 12V primary supply to a 9V backup battery during a power outage, upgraded with Schottky diodes, brownout protection, and a PNP-based outage alarm.
 
-Part 1: What Actually Happens in the Original Circuit
+---
 
-When the power is at 0ms to 50ms (Normal Power): the 12V main supply is working perfectly and the electricity passes through a conventional silicon diode, using up approximately 0.7V of energy. The load then gets a steady 11.3V. Since 11.3V is higher than the 9V of the backup battery, the diode of the battery remains closed and the battery is therefore completely idle.
+## Circuit Schematic & Simulation
+<!-- Remove or rename these lines to match your uploaded image filenames -->
+![Circuit Schematic](schematic.png)
+![Transient Waveform](waveform.png)
 
-At precisely 50ms (The Blackout): the 12V main grid fails completely and drops to 0V.
+---
 
-When the main power grid fails, the diode of the 9V battery is no longer blocked and the battery at once supplies power to the load. Having taken into account its own 0.7V diode voltage drop, the load is then supplied with a steady 8.3V. On a graph this appears as a sharp vertical drop — a sudden fall from 11.3V to 8.3V.
+## Baseline vs. Upgraded Design
 
-When the power is restored (at 100ms): the 12V grid re-comes online, immediately overpowers the 9V battery, causes the battery's diode to close once more, and the voltage across the load then rises directly back to 11.3V.
+| Feature | Baseline (Silicon ORing) | Upgraded Circuit | Benefit |
+| :--- | :--- | :--- | :--- |
+| **ORing Diodes** | Standard Silicon (~0.7V drop) | 2× Schottky Diodes (~0.2V drop) | Raises load voltage from 11.3V / 8.3V to ~11.8V / 8.8V; lowers heat loss |
+| **Blackout Transition** | Sharp vertical drop at 50ms | 100µF capacitor in parallel with load | Smooths voltage decay (brownout protection) so sensitive loads don't reset |
+| **Outage Indication** | None | PNP Transistor + LED stage | Automatically lights alert LED (~8 mA from 9V backup) during main failure |
 
-Part 2: Hackathon Upgrades
+---
 
-With Schottky diodes instead of standard silicon diodes, the circuit no longer wastes 0.7V as heat. During normal operation the load gets about 11.8V and during a blackout about 8.8V. The system is cooler and provides more usable power.
+## How It Works (PWL Transient Test: 0ms – 100ms)
 
-Smooth Transition (100µF Capacitor): The capacitor is connected in parallel with the load so that it functions as a small battery. Upon the main power failing at 50ms, the voltage does not drop instantly but instead the energy stored in the capacitor is discharged, causing a gradual, smooth decline to 8.8V. This 'brownout protection' provides the backup battery with a very short moment to smoothly take over the load and thus prevents sensitive electronics from malfunctioning or restarting because of a sudden drop in power.
+### 1. Normal Power (0ms – 50ms)
+* The 12V main supply powers the load through the primary Schottky diode, delivering **~11.8V** (vs. 11.3V with a silicon diode).
+* Because 11.8V > 9V, the backup Schottky diode stays reverse-biased and the 9V battery remains idle.
+* The 12V rail keeps the PNP transistor **OFF**, so the outage LED stays dark.
 
-The Smart Outage Alarm (using a PNP transistor and an LED): a transistor functions as a smart sensor for monitoring the 12 V circuit.
+### 2. Primary Failure / Blackout (50ms – 100ms)
+* At **50ms**, the 12V PWL source drops to 0V.
+* The **100µF capacitor** discharges into the load, preventing a sharp vertical voltage drop and giving a smooth ramp down to **~8.8V** as the 9V backup battery takes over.
+* With the 12V rail gone, the **PNP transistor turns ON**, routing **~8 mA** from the 9V backup rail through the LED to signal a power outage.
 
-Between 0ms and 50ms the 12V grid acts on the transistor, causing it to remain OFF. The LED then does not light.
+### 3. Power Restoration (100ms+)
+* At **100ms**, the 12V main supply returns, immediately reverse-biasing the backup diode.
+* Load voltage returns to **~11.8V**, the 9V battery goes idle again, and the PNP transistor switches **OFF**, turning off the alert LED.
 
-The 12V pressure vanishes at precisely 50ms, after which the transistor switches on automatically and provides a route for the 9V backup battery to supply 8 milliamps of current to the LED, causing it to light and alert you to the power failure.
+---
 
-At the 100ms mark the 12V supply is restored, which immediately switches off the transistor and once again puts the LED in the dark.
+## Bill of Materials (BOM)
+* 2× Schottky Diodes
+* 1× PNP Transistor
+* 1× 100µF Electrolytic Capacitor
+* 2× 1kΩ Resistors
+* 1× 10kΩ Resistor
+* 1× LED (Outage Indicator)
+* 12V Main Source (PWL for transient testing) & 9V Backup Battery
+* Breadboard & Connecting Wires
+
+---
+
+## Recognition
+Secured **1st Place** in *Concept to Circuit* at TechnoVIT'26, VIT Chennai (3rd–4th September 2026).
+
+![Winner Certificate](certificate.jpg)

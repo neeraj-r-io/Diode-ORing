@@ -54,4 +54,4 @@ A discrete analog power-path switchover circuit that automatically switches a lo
 ## Recognition
 Secured **1st Place** in *Concept to Circuit* at TechnoVIT'26, VIT Chennai (3rd–4th September 2026).
 
-![Winner Certificate](Certificate .png)
+![Winner Certificate](Certificate.png)

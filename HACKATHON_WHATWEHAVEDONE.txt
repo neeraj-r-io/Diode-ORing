@@ -1,0 +1,37 @@
+Components used:
+PNP Transistor
+ Led Diode
+ Schottky Diode (2)
+1K ohm Resistor (2)
+10K ohm Resistor
+2 Voltage Sources (9V and 12V) [12V-PWL source, 9V Backup Source]
+100 microfarad Capacitor
+Connecting wires
+
+
+Understanding:
+To construct a ORing Diode which acts as a ups switching to 9v when the 12V source fails. 
+
+Part 1: What Actually Happens in the Original Circuit
+
+When the power is at 0ms to 50ms (Normal Power): the 12V main supply is working perfectly and the electricity passes through a conventional silicon diode, using up approximately 0.7V of energy. The load then gets a steady 11.3V. Since 11.3V is higher than the 9V of the backup battery, the diode of the battery remains closed and the battery is therefore completely idle.
+
+At precisely 50ms (The Blackout): the 12V main grid fails completely and drops to 0V.
+
+When the main power grid fails, the diode of the 9V battery is no longer blocked and the battery at once supplies power to the load. Having taken into account its own 0.7V diode voltage drop, the load is then supplied with a steady 8.3V. On a graph this appears as a sharp vertical drop — a sudden fall from 11.3V to 8.3V.
+
+When the power is restored (at 100ms): the 12V grid re-comes online, immediately overpowers the 9V battery, causes the battery's diode to close once more, and the voltage across the load then rises directly back to 11.3V.
+
+Part 2: Hackathon Upgrades
+
+With Schottky diodes instead of standard silicon diodes, the circuit no longer wastes 0.7V as heat. During normal operation the load gets about 11.8V and during a blackout about 8.8V. The system is cooler and provides more usable power.
+
+Smooth Transition (100µF Capacitor): The capacitor is connected in parallel with the load so that it functions as a small battery. Upon the main power failing at 50ms, the voltage does not drop instantly but instead the energy stored in the capacitor is discharged, causing a gradual, smooth decline to 8.8V. This 'brownout protection' provides the backup battery with a very short moment to smoothly take over the load and thus prevents sensitive electronics from malfunctioning or restarting because of a sudden drop in power.
+
+The Smart Outage Alarm (using a PNP transistor and an LED): a transistor functions as a smart sensor for monitoring the 12 V circuit.
+
+Between 0ms and 50ms the 12V grid acts on the transistor, causing it to remain OFF. The LED then does not light.
+
+The 12V pressure vanishes at precisely 50ms, after which the transistor switches on automatically and provides a route for the 9V backup battery to supply 8 milliamps of current to the LED, causing it to light and alert you to the power failure.
+
+At the 100ms mark the 12V supply is restored, which immediately switches off the transistor and once again puts the LED in the dark.
